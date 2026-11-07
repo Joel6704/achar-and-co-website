@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Achar & Co. — Premium Kerala heritage pickles handcrafted in small batches using heirloom recipes, cold-pressed gingelly oil, and sun-cured spices. Ordering via WhatsApp across Kerala.">
+  <title>Achar & Co. — A Taste of Kerala, Made with Tradition</title>
+  
+  <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="main.js" defer></script>
+</head>
+<body>
+
+  <!-- Kerala-wide Delivery Announcement Bar -->
+  <div class="announcement-bar">
+    <span class="badge-kerala">Kerala-Wide Delivery</span>
+    <span>Authentic small-batch pickles delivered to doorsteps across all 14 districts of Kerala.</span>
+    <a href="contact.html#delivery">Check Delivery Info &rarr;</a>
+  </div>
+
+  <!-- Sticky Premium Header -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="index.html" class="brand-logo" aria-label="Achar and Co. Homepage">
+        <div class="brand-symbol">a.</div>
+        <div class="brand-text">
+          <span class="brand-name">achar <span>&</span> co.</span>
+          <span class="brand-sub">Kerala Heritage Pickles</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="main-navigation" aria-label="Primary Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="services.html" class="nav-link">Services & Bulk</a>
+        <a href="reviews.html" class="nav-link">Reviews</a>
+        <a href="contact.html" class="nav-link">Contact & Delivery</a>
+      </nav>
+
+      <!-- Header CTAs -->
+      <div class="header-actions">
+        <a href="#" class="header-wa-btn" aria-label="Chat on WhatsApp">
+          <span style="font-size: 15px;">💬</span>
+          <span>WhatsApp Order</span>
+        </a>
+        <button class="bag-btn" id="openBagBtn" aria-label="Open Cart Bag">
+          <span>Bag</span>
+          <span class="bag-badge" id="bagCountBadge">0</span>
+        </button>
+        <button class="mobile-toggle" aria-label="Toggle Navigation Menu">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Premium Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-grid">
+          <div class="hero-content">
+            <span class="eyebrow">Heirloom Recipes · Small Batch Care</span>
+            <h1>A Taste of Kerala,<br><em>Made with Tradition.</em></h1>
+            <p class="hero-description">
+              From the sun-soaked verandas of Central Travancore to the coastal kitchens of Malabar, Achar &amp; Co. honours the time-tested rituals of Kerala pickling. Prepared with cold-pressed gingelly oil, whole rock salt, and sun-cured spices — without artificial preservatives or synthetic colours.
+            </p>
+
+            <div class="hero-actions">
+              <a href="products.html" class="btn btn-primary">
+                Explore Our Pickles <span>&rarr;</span>
+              </a>
+              <a href="https://wa.me/919876543210?text=Namaskaram%20Achar%20%26%20Co.!%20I%20would%20like%20to%20order%20pickles." class="btn btn-wa" id="heroWhatsAppBtn" target="_blank" rel="noopener">
+                <span>💬</span> Order on WhatsApp
+              </a>
+            </div>
+
+            <div class="hero-highlights">
+              <div class="highlight-item">
+                <b>100% Traditional</b>
+                <span>Stone-pounded spices &amp; pure gingelly oil</span>
+              </div>
+              <div class="highlight-item">
+                <b>Unhurried Aging</b>
+                <span>Slowly matured in ceramic bharani jars</span>
+              </div>
+              <div class="highlight-item">
+                <b>Across Kerala</b>
+                <span>Doorstep delivery to all 14 districts</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual Frame with Ceramic Bharani Styling -->
+          <div class="hero-visual-frame">
+            <div class="hero-badge-stamp">
+              <span>Pure</span>
+              <b>കടു</b>
+              <span>Heritage</span>
+            </div>
+            <div class="hero-main-img-box">
+              <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1200&q=90" alt="Traditional Kerala Mango Pickle in Brass Uruli">
+            </div>
+            <div class="hero-floating-card">
+              <p>“The aroma of mustard crackling in pure sesame oil is our family inheritance.”</p>
+              <small>Central Travancore Tradition</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust Strip -->
+    <section class="trust-strip">
+      <div class="container">
+        <div class="trust-grid">
+          <div class="trust-item">
+            <div class="trust-icon">🌿</div>
+            <div class="trust-text">
+              <b>Cold-Pressed Gingelly Oil</b>
+              <small>Traditional preservative &amp; rich nutty base</small>
+            </div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon">☀️</div>
+            <div class="trust-text">
+              <b>Sun-Cured In Bharanis</b>
+              <small>Matured unhurried in glazed earthenware</small>
+            </div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon">🏺</div>
+            <div class="trust-text">
+              <b>Zero Artificial Additives</b>
+              <small>No synthetic colours or chemical preservatives</small>
+            </div>
+          </div>
+          <div class="trust-item">
+            <div class="trust-icon">📦</div>
+            <div class="trust-text">
+              <b>Kerala-Wide Dispatch</b>
+              <small>Airtight, courier-safe glass packaging</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Pickle Products Section -->
+    <section class="section" id="featured-products">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">The Signature Collection</span>
+          <h2>Traditional Kerala Flavours</h2>
+          <div class="brass-divider">✦ ✦ ✦</div>
+          <p>Handcrafted in small batches using seasonal Kerala produce. Every jar is seasoned with roasted fenugreek, stone-ground mustard, and rich aromatic oil.</p>
+        </div>
+
+        <div class="products-grid" id="featuredGrid">
+          <!-- Featured items will be populated by script or rendered server-side -->
+        </div>
+
+        <div style="text-align: center; margin-top: 50px;">
+          <a href="products.html" class="btn btn-outline">
+            View Complete 8-Flavour Catalogue &rarr;
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Brand Story Preview Section -->
+    <section class="section section-cream">
+      <div class="container">
+        <div class="story-grid">
+          <div class="story-image-wrap">
+            <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=1000&q=85" alt="Traditional Kerala Spices and Pickle Jar" class="story-img-main">
+            <div class="story-quote-card">
+              <p>“A Kerala meal is never complete without that fiery dot of pickle resting on the banana leaf corner.”</p>
+              <span>— The Achar &amp; Co. Philosophy</span>
+            </div>
+          </div>
+
+          <div class="story-content">
+            <span class="eyebrow">Rooted In Kerala Heritage</span>
+            <h2>The Sacred Bharani On The Sunlit Veranda</h2>
+            <p>
+              In our memories of ancestral Kerala homes, pickling was not an industrial rush — it was a sacred calendar of seasons. When early summer brought fragrant country mangoes and crisp wild lemons, stone jars known as <em>Bharanis</em> were brought out, cleansed in boiling water, and dried in the courtyard sun.
+            </p>
+            <p>
+              Achar &amp; Co. was born to preserve these uncompromised flavours. We do not take shortcuts. We simmer in traditional heavy-bottomed brass vessels, hand-stir in small batches, and let the spices slowly breathe into the fruit.
+            </p>
+            <div style="display: flex; gap: 20px; align-items: center; margin-top: 26px;">
+              <a href="about.html" class="text-link">Read Our Full Story &rarr;</a>
+              <a href="services.html" class="text-link">Explore Wedding &amp; Bulk Jars &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Why Choose Achar & Co. (Craftsmanship & Storytelling) -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">The Achar &amp; Co. Standard</span>
+          <h2>Why Our Pickles Taste Like Home</h2>
+          <div class="brass-divider">✦ ✦ ✦</div>
+          <p>We remain faithful to the unwritten culinary commandments of Kerala kitchens.</p>
+        </div>
+
+        <div class="process-grid">
+          <div class="process-card">
+            <div class="process-step-num">01</div>
+            <h3>Hand-Sorted Produce</h3>
+            <p>Crisp green mangoes, native wild citrons (Vadukapuli), and spicy birds eye chillies (Kanthari) chosen for firmness and natural zest.</p>
+          </div>
+
+          <div class="process-card">
+            <div class="process-step-num">02</div>
+            <h3>Pure Gingelly Oil</h3>
+            <p>We exclusively use pure cold-pressed sesame (gingelly) oil, imparting the deep nutty warmth quintessential to authentic Kerala achar.</p>
+          </div>
+
+          <div class="process-card">
+            <div class="process-step-num">03</div>
+            <h3>Stone-Ground Spices</h3>
+            <p>Slowly dry-roasted fenugreek, cracked mustard seeds, and vibrant red Kashmiri chillies crushed to release essential aromatic oils.</p>
+          </div>
+
+          <div class="process-card">
+            <div class="process-step-num">04</div>
+            <h3>Unhurried Maturation</h3>
+            <p>Never rushed through artificial heating. Matured in glazed ceramic containers to allow the marinade to soften the fruit naturally.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kerala-wide Delivery Section -->
+    <section class="section section-cream" id="delivery-section">
+      <div class="container">
+        <div class="kerala-delivery-box">
+          <div class="delivery-grid">
+            <div class="delivery-info-left">
+              <span class="eyebrow" style="color: var(--gold-warm);">Doorstep Courier Coverage</span>
+              <h2>Delivering Authentic Flavours Across All 14 Districts of Kerala</h2>
+              <p>
+                Whether you are in Thiruvananthapuram, Alappuzha, Kochi, Palakkad, Kozhikode, or the misty hills of Wayanad, we safely courier our glass-jar pickles directly to your doorstep.
+              </p>
+              
+              <div class="district-badges">
+                <span class="district-pill">Thiruvananthapuram</span>
+                <span class="district-pill">Kollam</span>
+                <span class="district-pill">Pathanamthitta</span>
+                <span class="district-pill">Alappuzha</span>
+                <span class="district-pill">Kottayam</span>
+                <span class="district-pill">Idukki</span>
+                <span class="district-pill">Ernakulam</span>
+                <span class="district-pill">Thrissur</span>
+                <span class="district-pill">Palakkad</span>
+                <span class="district-pill">Malappuram</span>
+                <span class="district-pill">Kozhikode</span>
+                <span class="district-pill">Wayanad</span>
+                <span class="district-pill">Kannur</span>
+                <span class="district-pill">Kasaragod</span>
+              </div>
+
+              <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                <a href="https://wa.me/919876543210?text=Namaskaram%20Achar%20%26%20Co.!%20I%20would%20like%20to%20check%20delivery%20availability%20and%20charges%20for%20my%20district." class="btn btn-gold" target="_blank" rel="noopener">
+                  <span>💬</span> Check Delivery For Your District
+                </a>
+                <a href="contact.html#delivery-details" class="btn btn-outline" style="border-color: rgba(255,255,255,0.4); color: #fff;">
+                  Delivery FAQs &rarr;
+                </a>
+              </div>
+            </div>
+
+            <div class="delivery-enquiry-card">
+              <h3>Secure Shock-Proof Packaging</h3>
+              <p>Glass jars are sealed with induction foil barriers and wrapped in multi-layer cushioning to guarantee zero leakage during transit.</p>
+              <div class="delivery-note-box">
+                <b>Delivery Notice:</b> Exact shipping fees &amp; timelines depend on your pincode and order weight. Confirm your rates directly on WhatsApp.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Genuine Customer Reviews Preview (Genuine Supplied Reviews Only) -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="eyebrow">Verified Customer Stories</span>
+          <h2>Words From Kerala Tables</h2>
+          <div class="brass-divider">✦ ✦ ✦</div>
+          <p>We cherish genuine customer experiences. Read genuine verified feedback from customers who have ordered our pickles across Kerala.</p>
+        </div>
+
+        <div class="reviews-grid" id="homeReviewsGrid">
+          <!-- Populated from config.js genuine reviews -->
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;">
+          <a href="reviews.html" class="btn btn-outline">Read All Reviews &amp; Photos &rarr;</a>
+          <a href="reviews.html#submit-review" class="btn btn-primary">Share Your Own Experience &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Instagram / Kerala Food Heritage Visual Gallery -->
+    <section class="section section-cream">
+      <div class="container">
+        <div class="section-header" style="margin-bottom: 30px;">
+          <span class="eyebrow">Visual Heritage</span>
+          <h2>Moments Around The Kerala Table</h2>
+          <p>Spices, earthen vessels, and the vibrant culinary spirit of God's Own Country.</p>
+        </div>
+
+        <div class="instagram-grid">
+          <div class="insta-item">
+            <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=700&q=80" alt="Kerala Mango Pickle in Traditional Bowl">
+            <div class="insta-overlay">
+              <span>Achar &amp; Co.</span>
+              <p>Pure gingelly oil &amp; crisp mango cubes</p>
+            </div>
+          </div>
+          <div class="insta-item">
+            <img src="https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=700&q=80" alt="Traditional Indian Spices in Kerala Kitchen">
+            <div class="insta-overlay">
+              <span>Authentic Spices</span>
+              <p>Mustard, fenugreek &amp; Kashmiri chillies</p>
+            </div>
+          </div>
+          <div class="insta-item">
+            <img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=700&q=80" alt="Banana leaf meal with pickle on the side">
+            <div class="insta-overlay">
+              <span>Sadhya Essential</span>
+              <p>No Kerala feast is complete without achar</p>
+            </div>
+          </div>
+          <div class="insta-item">
+            <img src="https://images.unsplash.com/photo-1588252303782-cb80119abd6d?auto=format&fit=crop&w=700&q=80" alt="Fresh green chillies and native spices">
+            <div class="insta-overlay">
+              <span>Kanthari Heritage</span>
+              <p>Pungent local bird's eye chillies in brine</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Premium Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 12px;">
+            <div class="brand-symbol">a.</div>
+            <div class="brand-text">
+              <span class="brand-name" style="color: #fff;">achar <span style="color: var(--gold-warm);">&amp;</span> co.</span>
+              <span class="brand-sub" style="color: var(--gold-warm);">Kerala Heritage Pickles</span>
+            </div>
+          </a>
+          <p>
+            Honouring centuries of Kerala culinary wisdom. Handcrafted in small batches with cold-pressed gingelly oil, whole rock salt, and authentic sun-curing.
+          </p>
+          <div style="font-size: 12px; color: var(--gold-warm); font-weight: 700;">
+            📍 Delivering Across All 14 Districts of Kerala
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Our Heritage</a></li>
+            <li><a href="products.html">Pickle Catalogue</a></li>
+            <li><a href="services.html">Bulk &amp; Feasts</a></li>
+            <li><a href="reviews.html">Customer Reviews</a></li>
+            <li><a href="contact.html">Contact &amp; FAQs</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Popular Pickles</h4>
+          <ul class="footer-links">
+            <li><a href="products.html">Cut Mango Pickle</a></li>
+            <li><a href="products.html">Vadukapuli Lemon</a></li>
+            <li><a href="products.html">Kanthari Mulaku</a></li>
+            <li><a href="products.html">Spiced Garlic</a></li>
+            <li><a href="products.html">Festive Inji Puli</a></li>
+            <li><a href="products.html">Coastal Prawn Pickle</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Ordering &amp; Enquiries</h4>
+          <p style="font-size: 13px; color: #bfd0c4; margin-bottom: 14px;">
+            We take all orders directly on WhatsApp for personalized service:
+          </p>
+          <a href="https://wa.me/919876543210" class="btn btn-wa btn-sm" target="_blank" rel="noopener" style="margin-bottom: 16px;">
+            <span>💬</span> Message On WhatsApp
+          </a>
+          <div style="font-size: 12px; color: #bfd0c4;">
+            <div>Phone: <span data-config-phone>+91 98765 43210 [Configurable]</span></div>
+            <div style="margin-top: 4px;">Email: <span data-config-email>namaskaram@acharandco.com [Configurable]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; <span id="currentYear"></span> Achar &amp; Co. All rights reserved. Handcrafted in Kerala.</div>
+        <div>
+          <span>Crafted with pure spices and Kerala tradition.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Action Button -->
+  <a href="#" class="floating-wa-btn" id="floatingWhatsApp" target="_blank" rel="noopener" aria-label="Order Pickles on WhatsApp">
+    <div class="floating-wa-icon">💬</div>
+    <span>Order on WhatsApp</span>
+  </a>
+
+  <!-- Cart Drawer -->
+  <div class="drawer-backdrop" id="cartBackdrop"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping Cart Bag">
+    <div class="drawer-header">
+      <h3>Your Bag <span id="drawerItemCount">(0)</span></h3>
+      <button class="drawer-close" id="closeBagBtn" aria-label="Close Bag">&times;</button>
+    </div>
+    <div class="drawer-body" id="cartItemsContainer">
+      <!-- Items populated by main.js -->
+    </div>
+    <div class="drawer-footer">
+      <div class="subtotal-row">
+        <span>Estimated Subtotal:</span>
+        <b id="cartSubtotalDisplay">₹0</b>
+      </div>
+      <button class="btn btn-wa btn-full" id="checkoutWhatsAppBtn">
+        <span>💬</span> Complete Order on WhatsApp
+      </button>
+      <small class="note">Courier charges to your Kerala district will be calculated on WhatsApp.</small>
+    </div>
+  </aside>
+
+  <!-- Quick View Product Modal -->
+  <div class="modal-backdrop" id="quickViewModal">
+    <div class="modal-content-box">
+      <button class="modal-close-btn" onclick="closeQuickView()" aria-label="Close modal">&times;</button>
+      <div id="quickViewContent">
+        <!-- Injected dynamically via openQuickView() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Specific Script for Home Page -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+      // Render 3 signature featured pickles on home page
+      const featuredContainer = document.getElementById("featuredGrid");
+      if (featuredContainer && typeof ACHAR_CONFIG !== "undefined") {
+        const featuredList = ACHAR_CONFIG.products.slice(0, 3);
+        featuredContainer.innerHTML = featuredList.map(p => `
+          <div class="product-card">
+            <div class="product-image-container">
+              <img src="${p.image}" alt="${p.name}" loading="lazy">
+              <span class="product-badge">${p.badge}</span>
+              <span class="product-category-tag">${p.category}</span>
+            </div>
+            <div class="product-body">
+              <h3 class="product-title">${p.name}</h3>
+              <p class="product-malayalam">${p.malayalamName}</p>
+              <p class="product-desc">${p.shortDesc}</p>
+              
+              <div class="product-controls">
+                <div class="size-price-row">
+                  <div>
+                    <label for="sizeSelect-${p.id}" style="font-size: 11px; display: block; color: var(--ink-light); margin-bottom: 2px;">Select Pack:</label>
+                    <select id="sizeSelect-${p.id}" class="size-selector" onchange="updateHomeCardPrice('${p.id}', this.value)">
+                      ${Object.entries(p.prices).map(([sz, pr]) => `<option value="${sz}">${sz}</option>`).join("")}
+                    </select>
+                  </div>
+                  <div class="price-display">
+                    <span class="price-amount" id="homePrice-${p.id}">₹${p.prices["250g"]}</span>
+                    <span class="price-note">Configurable</span>
+                  </div>
+                </div>
+
+                <div class="product-actions">
+                  <button class="btn-order-wa" onclick="orderSingleProductOnWhatsApp('${p.id}')">
+                    <span>💬</span> WhatsApp Order
+                  </button>
+                  <button class="btn-quick-view" onclick="openQuickView('${p.id}')" title="View details, ingredients and storage">
+                    Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      // Render genuine reviews on home page
+      const homeReviewsEl = document.getElementById("homeReviewsGrid");
+      if (homeReviewsEl && typeof getApprovedReviews === "function") {
+        const reviews = getApprovedReviews().slice(0, 3);
+        homeReviewsEl.innerHTML = reviews.map(r => `
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">“${r.text}”</p>
+            <div class="review-footer">
+              <div class="reviewer-meta">
+                <b>${r.author}</b>
+                <small>${r.location} &middot; Ordered ${r.pickleName}</small>
+              </div>
+              <span class="verified-tag">✓ Verified Customer</span>
+            </div>
+          </div>
+        `).join("");
+      }
+    });
+
+    function updateHomeCardPrice(productId, size) {
+      const product = ACHAR_CONFIG.products.find(p => p.id === productId);
+      if (!product) return;
+      const el = document.getElementById(`homePrice-${productId}`);
+      if (el) el.textContent = `₹${product.prices[size]}`;
+    }
+  </script>
+</body>
+</html>
