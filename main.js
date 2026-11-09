@@ -1,18 +1,96 @@
 /**
  * Achar & Co. — Core Application Scripts
  * Shared across all pages: Navigation, Cart Drawer, WhatsApp Links, Modals, Toasts
+ * Synchronized with Supabase / Admin Product Management
  */
 
 // Cart state (stored in localStorage)
 let ACHAR_CART = JSON.parse(localStorage.getItem("achar_co_cart") || "[]");
 
 document.addEventListener("DOMContentLoaded", () => {
+  // Sync latest product database before rendering
+  syncProductsFromStorage();
+
   initNavigation();
   initFloatingWhatsApp();
   initCartDrawer();
   updateCartBadge();
   setupGlobalPlaceholders();
+
+  // Listen for storage events (when admin updates in another tab)
+  window.addEventListener("storage", (e) => {
+    if (e.key === "achar_admin_products") {
+      syncProductsFromStorage();
+      window.dispatchEvent(new CustomEvent("achar:products-updated"));
+    }
+  });
 });
+
+/**
+ * Synchronize live products from Admin Product Management (Supabase / local store)
+ */
+function syncProductsFromStorage() {
+  try {
+    const raw = localStorage.getItem("achar_admin_products");
+    if (!raw || typeof ACHAR_CONFIG === "undefined") return;
+    const adminProducts = JSON.parse(raw);
+    if (!Array.isArray(adminProducts) || adminProducts.length === 0) return;
+
+    // Filter active products only (exclude Draft and Inactive)
+    const activeAdminProducts = adminProducts.filter(p => (p.product_status || 'Active') === 'Active');
+
+    // Create lookup of default config products by id or slug
+    const existingMap = new Map();
+    ACHAR_CONFIG.products.forEach(p => {
+      existingMap.set(p.id, p);
+      if (p.slug) existingMap.set(p.slug, p);
+    });
+
+    const syncedList = activeAdminProducts.map(p => {
+      const match = existingMap.get(p.id) || existingMap.get(p.slug) || {};
+      const regPrice = Number(p.regular_price) || match.prices?.["250g"] || 190;
+      const discountPrice = p.discount_price ? Number(p.discount_price) : null;
+      const activeBasePrice = discountPrice || regPrice;
+
+      const prices = {
+        "250g": activeBasePrice,
+        "500g": Math.round(activeBasePrice * 1.9),
+        "1kg": Math.round(activeBasePrice * 3.6)
+      };
+
+      const primaryImg = p.primary_image || (p.images && p.images[0]?.image_url) || match.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800';
+
+      return {
+        id: p.id,
+        slug: p.slug || match.slug || p.id,
+        name: p.name || match.name,
+        malayalamName: match.malayalamName || p.name,
+        category: p.category_name || match.category || 'Vegetarian',
+        badge: p.is_featured ? 'FEATURED' : (match.badge || 'HERITAGE SELECTION'),
+        shortDesc: p.short_description || match.shortDesc || '',
+        fullStory: p.description || match.fullStory || p.short_description || '',
+        image: primaryImg,
+        images: p.images && p.images.length > 0 ? p.images : (match.images || [{ image_url: primaryImg, is_primary: true }]),
+        prices,
+        regular_price: regPrice,
+        discount_price: discountPrice,
+        availability_status: p.availability_status || 'In Stock',
+        is_out_of_stock: p.availability_status === 'Out of Stock',
+        is_featured: Boolean(p.is_featured),
+        ingredients: p.ingredients || match.ingredients || '',
+        allergens: p.allergen_information || match.allergens || 'Contains Sesame and Mustard seeds.',
+        storage: p.storage_instructions || match.storage || 'Store in a cool, dry place. Keep sealed.',
+        shelfLife: p.shelf_life || match.shelfLife || '9 months from packaging date.'
+      };
+    });
+
+    if (syncedList.length > 0) {
+      ACHAR_CONFIG.products = syncedList;
+    }
+  } catch (err) {
+    console.warn("Could not sync products from storage:", err);
+  }
+}
 
 /**
  * Navigation & Header handling
@@ -140,11 +218,16 @@ function closeCart() {
 }
 
 function addToCart(productId, size = "250g", qty = 1) {
-  const product = ACHAR_CONFIG.products.find(p => p.id === productId);
+  const product = ACHAR_CONFIG.products.find(p => p.id === productId || p.slug === productId);
   if (!product) return;
 
+  if (product.is_out_of_stock) {
+    showToast(`${product.name} is currently Out of Stock.`);
+    return;
+  }
+
   const price = product.prices[size] || 0;
-  const key = `${productId}_${size}`;
+  const key = `${product.id}_${size}`;
   const existing = ACHAR_CART.find(item => item.key === key);
 
   if (existing) {
@@ -248,8 +331,13 @@ function renderCartItems() {
  * Direct WhatsApp Order for a Single Product
  */
 function orderSingleProductOnWhatsApp(productId) {
-  const product = ACHAR_CONFIG.products.find(p => p.id === productId);
+  const product = ACHAR_CONFIG.products.find(p => p.id === productId || p.slug === productId);
   if (!product) return;
+
+  if (product.is_out_of_stock) {
+    showToast(`${product.name} is currently Out of Stock.`);
+    return;
+  }
 
   const sizeSelect = document.getElementById(`sizeSelect-${productId}`);
   const selectedSize = sizeSelect ? sizeSelect.value : "250g";
@@ -262,29 +350,47 @@ function orderSingleProductOnWhatsApp(productId) {
 }
 
 /**
- * Quick View Product Modal
+ * Quick View Product Modal with Multi-Image Support
  */
 function openQuickView(productId) {
-  const product = ACHAR_CONFIG.products.find(p => p.id === productId);
+  const product = ACHAR_CONFIG.products.find(p => p.id === productId || p.slug === productId);
   if (!product) return;
 
   const modalBackdrop = document.getElementById("quickViewModal");
   const modalBody = document.getElementById("quickViewContent");
   if (!modalBackdrop || !modalBody) return;
 
+  const productImages = product.images && product.images.length > 0
+    ? product.images
+    : [{ image_url: product.image, alt_text: product.name }];
+
+  const thumbsHtml = productImages.length > 1 ? `
+    <div class="quickview-thumbs">
+      ${productImages.map((img, idx) => `
+        <div class="quickview-thumb-item ${idx === 0 ? 'active' : ''}" onclick="switchQuickViewImage('${img.image_url}', this)">
+          <img src="${img.image_url}" alt="Thumbnail ${idx + 1}">
+        </div>
+      `).join('')}
+    </div>
+  ` : '';
+
   modalBody.innerHTML = `
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px;">
       <div>
-        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 280px; object-fit: cover; border-radius: 4px; border: 1px solid var(--cream-line);">
+        <img id="quickViewMainImage" src="${product.image}" alt="${product.name}" style="width: 100%; height: 280px; object-fit: cover; border-radius: 4px; border: 1px solid var(--cream-line);">
+        ${thumbsHtml}
         <div style="margin-top: 14px; background: var(--cream-soft); padding: 12px; border-radius: 4px; font-size: 11px;">
           <b style="color: var(--green-deep); display: block; margin-bottom: 4px;">🌿 Traditional Preparation Note:</b>
           <p style="margin: 0; line-height: 1.5; color: var(--ink-muted);">Made in small unhurried batches. Free from synthetic vinegar, chemical preservatives, or artificial food dyes.</p>
         </div>
       </div>
       <div>
-        <span class="eyebrow no-after" style="margin-bottom: 6px;">${product.category} &middot; ${product.badge}</span>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;">
+          <span class="eyebrow no-after" style="margin: 0;">${product.category} &middot; ${product.badge}</span>
+          ${product.is_out_of_stock ? '<span class="product-badge out-of-stock" style="position: static; font-size: 9px; padding: 2px 7px;">OUT OF STOCK</span>' : ''}
+        </div>
         <h3 style="margin-bottom: 2px;">${product.name}</h3>
-        <p class="malayalam-script" style="margin-bottom: 14px;">${product.malayalamName}</p>
+        <p class="malayalam-script" style="margin-bottom: 14px; font-size: 13px; color: var(--gold-turmeric); font-weight: 600;">${product.malayalamName}</p>
         <p style="font-size: 13px; line-height: 1.7; color: var(--ink-muted); margin-bottom: 16px;">${product.fullStory}</p>
         
         <div style="background: var(--cream-paper); border: 1px solid var(--cream-line); border-radius: 4px; padding: 14px; margin-bottom: 18px;">
@@ -304,15 +410,19 @@ function openQuickView(productId) {
 
         <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 16px;">
           <label style="font-size: 12px; font-weight: 700; color: var(--green-deep);">Pack Size:</label>
-          <select id="modalSizeSelect" class="size-selector" onchange="updateModalPrice('${product.id}', this.value)">
+          <select id="modalSizeSelect" class="size-selector" onchange="updateModalPrice('${product.id}', this.value)" ${product.is_out_of_stock ? 'disabled' : ''}>
             ${Object.entries(product.prices).map(([sz, pr]) => `<option value="${sz}">${sz} &mdash; ₹${pr}</option>`).join("")}
           </select>
           <b id="modalPriceLabel" style="font-family: var(--font-serif); font-size: 20px; color: var(--green-deep); margin-left: auto;">₹${product.prices["250g"]}</b>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-          <button class="btn btn-wa btn-sm" onclick="orderModalProduct('${product.id}')">Order on WhatsApp &rarr;</button>
-          <button class="btn btn-primary btn-sm" onclick="addModalToBag('${product.id}')">Add to Bag +</button>
+          <button class="btn btn-wa btn-sm ${product.is_out_of_stock ? 'disabled' : ''}" onclick="orderModalProduct('${product.id}')" ${product.is_out_of_stock ? 'disabled' : ''}>
+            ${product.is_out_of_stock ? 'Out of Stock' : 'Order on WhatsApp &rarr;'}
+          </button>
+          <button class="btn btn-primary btn-sm ${product.is_out_of_stock ? 'disabled' : ''}" onclick="addModalToBag('${product.id}')" ${product.is_out_of_stock ? 'disabled' : ''}>
+            ${product.is_out_of_stock ? 'Unavailable' : 'Add to Bag +'}
+          </button>
         </div>
       </div>
     </div>
@@ -322,8 +432,15 @@ function openQuickView(productId) {
   document.body.style.overflow = "hidden";
 }
 
+function switchQuickViewImage(url, element) {
+  const mainImg = document.getElementById("quickViewMainImage");
+  if (mainImg) mainImg.src = url;
+  document.querySelectorAll(".quickview-thumb-item").forEach(el => el.classList.remove("active"));
+  if (element) element.classList.add("active");
+}
+
 function updateModalPrice(productId, size) {
-  const product = ACHAR_CONFIG.products.find(p => p.id === productId);
+  const product = ACHAR_CONFIG.products.find(p => p.id === productId || p.slug === productId);
   if (!product) return;
   const label = document.getElementById("modalPriceLabel");
   if (label) {
@@ -342,8 +459,8 @@ function closeQuickView() {
 function orderModalProduct(productId) {
   const select = document.getElementById("modalSizeSelect");
   const size = select ? select.value : "250g";
-  const product = ACHAR_CONFIG.products.find(p => p.id === productId);
-  if (!product) return;
+  const product = ACHAR_CONFIG.products.find(p => p.id === productId || p.slug === productId);
+  if (!product || product.is_out_of_stock) return;
 
   const price = product.prices[size];
   const msg = `Namaskaram Achar & Co.! 🌶️\nI would like to order:\n• Product: *${product.name}*\n• Pack Size: *${size}*\n• Estimated Price: *₹${price}*\n• Delivery: Across Kerala\n\nPlease share delivery options and availability.`;
@@ -379,7 +496,7 @@ function showToast(text) {
 }
 
 /**
- * Placeholders Helper: Ensures any dynamic placeholder fields display cleanly
+ * Placeholders Helper: Ensures dynamic placeholder fields display cleanly
  */
 function setupGlobalPlaceholders() {
   document.querySelectorAll("[data-config-phone]").forEach(el => {
@@ -392,4 +509,3 @@ function setupGlobalPlaceholders() {
     el.textContent = ACHAR_CONFIG.address;
   });
 }
-

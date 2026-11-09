@@ -12,8 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js" defer></script>
-  <script src="main.js" defer></script>
+  <script src="/config.js"></script>
+  <script src="/main.js"></script>
+  <script type="module" src="/src/public-enquiry.js"></script>
 </head>
 <body>
 
@@ -387,6 +388,7 @@
             <li><a href="services.html">Bulk &amp; Feasts</a></li>
             <li><a href="reviews.html">Customer Reviews</a></li>
             <li><a href="contact.html">Contact &amp; FAQs</a></li>
+            <li style="margin-top: 6px;"><a href="/admin/login" style="color: var(--gold-warm); font-size: 11px;">🔐 Admin Portal</a></li>
           </ul>
         </div>
 
@@ -469,49 +471,67 @@
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("currentYear").textContent = new Date().getFullYear();
 
-      // Render 3 signature featured pickles on home page
-      const featuredContainer = document.getElementById("featuredGrid");
-      if (featuredContainer && typeof ACHAR_CONFIG !== "undefined") {
-        const featuredList = ACHAR_CONFIG.products.slice(0, 3);
-        featuredContainer.innerHTML = featuredList.map(p => `
-          <div class="product-card">
-            <div class="product-image-container">
-              <img src="${p.image}" alt="${p.name}" loading="lazy">
-              <span class="product-badge">${p.badge}</span>
-              <span class="product-category-tag">${p.category}</span>
-            </div>
-            <div class="product-body">
-              <h3 class="product-title">${p.name}</h3>
-              <p class="product-malayalam">${p.malayalamName}</p>
-              <p class="product-desc">${p.shortDesc}</p>
-              
-              <div class="product-controls">
-                <div class="size-price-row">
-                  <div>
-                    <label for="sizeSelect-${p.id}" style="font-size: 11px; display: block; color: var(--ink-light); margin-bottom: 2px;">Select Pack:</label>
-                    <select id="sizeSelect-${p.id}" class="size-selector" onchange="updateHomeCardPrice('${p.id}', this.value)">
-                      ${Object.entries(p.prices).map(([sz, pr]) => `<option value="${sz}">${sz}</option>`).join("")}
-                    </select>
-                  </div>
-                  <div class="price-display">
-                    <span class="price-amount" id="homePrice-${p.id}">₹${p.prices["250g"]}</span>
-                    <span class="price-note">Configurable</span>
-                  </div>
-                </div>
+      renderHomeFeatured();
 
-                <div class="product-actions">
-                  <button class="btn-order-wa" onclick="orderSingleProductOnWhatsApp('${p.id}')">
-                    <span>💬</span> WhatsApp Order
-                  </button>
-                  <button class="btn-quick-view" onclick="openQuickView('${p.id}')" title="View details, ingredients and storage">
-                    Details
-                  </button>
+      window.addEventListener("achar:products-updated", () => {
+        renderHomeFeatured();
+      });
+    });
+
+    function renderHomeFeatured() {
+      const featuredContainer = document.getElementById("featuredGrid");
+      if (!featuredContainer || typeof ACHAR_CONFIG === "undefined") return;
+
+      const explicitlyFeatured = ACHAR_CONFIG.products.filter(p => p.is_featured);
+      const featuredList = (explicitlyFeatured.length > 0 ? explicitlyFeatured : ACHAR_CONFIG.products).slice(0, 3);
+
+      featuredContainer.innerHTML = featuredList.map(p => {
+        const isOutOfStock = p.is_out_of_stock || p.availability_status === 'Out of Stock';
+        const hasDiscount = p.discount_price && Number(p.discount_price) < Number(p.regular_price);
+
+        return `
+        <div class="product-card ${isOutOfStock ? 'is-out-of-stock' : ''}">
+          <div class="product-image-container">
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800'">
+            <span class="product-badge ${isOutOfStock ? 'out-of-stock' : ''}">${isOutOfStock ? 'OUT OF STOCK' : p.badge}</span>
+            <span class="product-category-tag">${p.category}</span>
+          </div>
+          <div class="product-body">
+            <h3 class="product-title">${p.name}</h3>
+            <p class="product-malayalam">${p.malayalamName || ''}</p>
+            <p class="product-desc">${p.shortDesc || ''}</p>
+            
+            <div class="product-controls">
+              <div class="size-price-row">
+                <div>
+                  <label for="sizeSelect-${p.id}" style="font-size: 11px; display: block; color: var(--ink-light); margin-bottom: 2px;">Select Pack:</label>
+                  <select id="sizeSelect-${p.id}" class="size-selector" onchange="updateHomeCardPrice('${p.id}', this.value)" ${isOutOfStock ? 'disabled' : ''}>
+                    ${Object.entries(p.prices || { '250g': p.regular_price || 190 }).map(([sz, pr]) => `<option value="${sz}">${sz}</option>`).join("")}
+                  </select>
                 </div>
+                <div class="price-display">
+                  <div>
+                    ${hasDiscount ? `<span class="price-regular-strike">₹${p.regular_price}</span>` : ''}
+                    <span class="price-amount" id="homePrice-${p.id}">₹${p.prices ? p.prices["250g"] : p.regular_price}</span>
+                  </div>
+                  <span class="price-note">${isOutOfStock ? 'Temporarily Unavailable' : 'Configurable'}</span>
+                </div>
+              </div>
+
+              <div class="product-actions">
+                <button class="btn-order-wa ${isOutOfStock ? 'disabled' : ''}" onclick="orderSingleProductOnWhatsApp('${p.id}')" ${isOutOfStock ? 'disabled' : ''}>
+                  <span>💬</span> ${isOutOfStock ? 'Out of Stock' : 'WhatsApp Order'}
+                </button>
+                <button class="btn-quick-view" onclick="openQuickView('${p.id}')" title="View details, ingredients and storage">
+                  Details
+                </button>
               </div>
             </div>
           </div>
-        `).join("");
-      }
+        </div>
+      `;
+      }).join("");
+    }
 
       // Render genuine reviews on home page
       const homeReviewsEl = document.getElementById("homeReviewsGrid");

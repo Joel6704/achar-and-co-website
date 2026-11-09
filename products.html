@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js" defer></script>
-  <script src="main.js" defer></script>
+  <script src="/config.js"></script>
+  <script src="/main.js"></script>
 </head>
 <body>
 
@@ -172,6 +172,7 @@
             <li><a href="services.html">Bulk &amp; Feasts</a></li>
             <li><a href="reviews.html">Customer Reviews</a></li>
             <li><a href="contact.html">Contact &amp; FAQs</a></li>
+            <li style="margin-top: 6px;"><a href="/admin/login" style="color: var(--gold-warm); font-size: 11px;">🔐 Admin Portal</a></li>
           </ul>
         </div>
 
@@ -282,6 +283,10 @@
           renderCatalogue();
         });
       }
+      // Listen for dynamic product updates from admin panel
+      window.addEventListener("achar:products-updated", () => {
+        renderCatalogue();
+      });
     });
 
     function resetFilters() {
@@ -305,15 +310,15 @@
 
       let list = ACHAR_CONFIG.products.filter(p => {
         const matchesCategory = activeFilter === "All" || p.category === activeFilter;
-        const matchesSearch = (p.name + " " + p.malayalamName + " " + p.shortDesc + " " + p.ingredients).toLowerCase().includes(searchQuery);
+        const matchesSearch = (p.name + " " + (p.malayalamName || "") + " " + (p.shortDesc || "") + " " + (p.ingredients || "")).toLowerCase().includes(searchQuery);
         return matchesCategory && matchesSearch;
       });
 
       // Sorting
       if (sortMethod === "price-asc") {
-        list.sort((a, b) => a.prices["250g"] - b.prices["250g"]);
+        list.sort((a, b) => (a.prices["250g"] || 0) - (b.prices["250g"] || 0));
       } else if (sortMethod === "price-desc") {
-        list.sort((a, b) => b.prices["250g"] - a.prices["250g"]);
+        list.sort((a, b) => (b.prices["250g"] || 0) - (a.prices["250g"] || 0));
       } else if (sortMethod === "name") {
         list.sort((a, b) => a.name.localeCompare(b.name));
       }
@@ -325,53 +330,63 @@
       }
 
       noResults.style.display = "none";
-      grid.innerHTML = list.map(p => `
-        <div class="product-card">
+      grid.innerHTML = list.map(p => {
+        const isOutOfStock = p.is_out_of_stock || p.availability_status === 'Out of Stock';
+        const hasDiscount = p.discount_price && Number(p.discount_price) < Number(p.regular_price);
+
+        return `
+        <div class="product-card ${isOutOfStock ? 'is-out-of-stock' : ''}">
           <div class="product-image-container">
-            <img src="${p.image}" alt="${p.name}" loading="lazy">
-            <span class="product-badge">${p.badge}</span>
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800'">
+            <span class="product-badge ${isOutOfStock ? 'out-of-stock' : ''}">
+              ${isOutOfStock ? 'OUT OF STOCK' : p.badge}
+            </span>
             <span class="product-category-tag">${p.category}</span>
           </div>
           <div class="product-body">
             <h3 class="product-title">${p.name}</h3>
-            <p class="product-malayalam">${p.malayalamName}</p>
-            <p class="product-desc">${p.shortDesc}</p>
+            <p class="product-malayalam">${p.malayalamName || ''}</p>
+            <p class="product-desc">${p.shortDesc || ''}</p>
             
             <div class="product-controls">
               <div class="size-price-row">
                 <div>
                   <label for="sizeSelect-${p.id}" style="font-size: 11px; display: block; color: var(--ink-light); margin-bottom: 2px;">Pack Size:</label>
-                  <select id="sizeSelect-${p.id}" class="size-selector" onchange="updateCardPrice('${p.id}', this.value)">
-                    ${Object.entries(p.prices).map(([sz, pr]) => `<option value="${sz}">${sz}</option>`).join("")}
+                  <select id="sizeSelect-${p.id}" class="size-selector" onchange="updateCardPrice('${p.id}', this.value)" ${isOutOfStock ? 'disabled' : ''}>
+                    ${Object.entries(p.prices || { '250g': p.regular_price || 190 }).map(([sz, pr]) => `<option value="${sz}">${sz}</option>`).join("")}
                   </select>
                 </div>
                 <div class="price-display">
-                  <span class="price-amount" id="priceDisplay-${p.id}">₹${p.prices["250g"]}</span>
-                  <span class="price-note">Ready to Order</span>
+                  <div>
+                    ${hasDiscount ? `<span class="price-regular-strike">₹${p.regular_price}</span>` : ''}
+                    <span class="price-amount" id="priceDisplay-${p.id}">₹${p.prices ? p.prices["250g"] : p.regular_price}</span>
+                  </div>
+                  <span class="price-note">${isOutOfStock ? 'Temporarily Unavailable' : 'Ready to Order'}</span>
                 </div>
               </div>
 
               <div class="product-actions">
-                <button class="btn-order-wa" onclick="orderSingleProductOnWhatsApp('${p.id}')">
-                  <span>💬</span> Order on WhatsApp
+                <button class="btn-order-wa ${isOutOfStock ? 'disabled' : ''}" onclick="orderSingleProductOnWhatsApp('${p.id}')" ${isOutOfStock ? 'disabled' : ''}>
+                  <span>💬</span> ${isOutOfStock ? 'Out of Stock' : 'Order on WhatsApp'}
                 </button>
                 <button class="btn-quick-view" onclick="openQuickView('${p.id}')" title="Ingredients, allergens and storage details">
                   Details
                 </button>
               </div>
 
-              <button class="btn btn-outline btn-sm btn-full" style="margin-top: 8px; padding: 7px 10px; font-size: 11px;" onclick="addCardToBag('${p.id}')">
-                Add to Bag +
+              <button class="btn btn-outline btn-sm btn-full ${isOutOfStock ? 'disabled' : ''}" style="margin-top: 8px; padding: 7px 10px; font-size: 11px;" onclick="addCardToBag('${p.id}')" ${isOutOfStock ? 'disabled' : ''}>
+                ${isOutOfStock ? 'Unavailable' : 'Add to Bag +'}
               </button>
             </div>
           </div>
         </div>
-      `).join("");
+      `;
+      }).join("");
     }
 
     function updateCardPrice(productId, size) {
-      const product = ACHAR_CONFIG.products.find(p => p.id === productId);
-      if (!product) return;
+      const product = ACHAR_CONFIG.products.find(p => p.id === productId || p.slug === productId);
+      if (!product || !product.prices) return;
       const priceEl = document.getElementById(`priceDisplay-${productId}`);
       if (priceEl) {
         priceEl.textContent = `₹${product.prices[size]}`;

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Achar & Co. services: Individual doorstep orders, bulk Sadhya wedding orders, curated festive gift hampers, restaurant catering supply, and bespoke custom pickle batches across Kerala.">
+  <title>Services & Bulk Feasts | Achar & Co.</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="/config.js"></script>
+  <script src="/main.js"></script>
+  <script type="module" crossorigin src="/assets/api-ZQsuDYGJ.js"></script>
+  <script type="module" crossorigin src="/assets/public-enquiry-CHqZDtcg.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/styles-DR9qaIBk.css">
+</head>
+<body>
+
+  <!-- Kerala-wide Delivery Announcement Bar -->
+  <div class="announcement-bar">
+    <span class="badge-kerala">Kerala-Wide Delivery</span>
+    <span>Authentic small-batch pickles delivered to doorsteps across all 14 districts of Kerala.</span>
+    <a href="contact.html#delivery">Check Delivery Info &rarr;</a>
+  </div>
+
+  <!-- Sticky Premium Header -->
+  <header class="site-header">
+    <div class="container header-container">
+      <a href="index.html" class="brand-logo" aria-label="Achar and Co. Homepage">
+        <div class="brand-symbol">a.</div>
+        <div class="brand-text">
+          <span class="brand-name">achar <span>&</span> co.</span>
+          <span class="brand-sub">Kerala Heritage Pickles</span>
+        </div>
+      </a>
+
+      <nav class="main-navigation" aria-label="Primary Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link">About Us</a>
+        <a href="products.html" class="nav-link">Products</a>
+        <a href="services.html" class="nav-link">Services & Bulk</a>
+        <a href="reviews.html" class="nav-link">Reviews</a>
+        <a href="contact.html" class="nav-link">Contact & Delivery</a>
+      </nav>
+
+      <div class="header-actions">
+        <a href="#" class="header-wa-btn" aria-label="Chat on WhatsApp">
+          <span style="font-size: 15px;">💬</span>
+          <span>WhatsApp Order</span>
+        </a>
+        <button class="bag-btn" id="openBagBtn" aria-label="Open Cart Bag">
+          <span>Bag</span>
+          <span class="bag-badge" id="bagCountBadge">0</span>
+        </button>
+        <button class="mobile-toggle" aria-label="Toggle Navigation Menu">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Services Hero Banner -->
+    <section class="hero" style="padding-bottom: 40px;">
+      <div class="container">
+        <div class="section-header" style="margin-bottom: 24px;">
+          <span class="eyebrow">Tailored For Every Occasion</span>
+          <h1>Pickling Services &amp; Bulk Feasts</h1>
+          <div class="brass-divider">✦ ✦ ✦</div>
+          <p>
+            From a single handcrafted jar for your family dinner to multi-kilogram batches for grand Kerala weddings, Sadhya feasts, and corporate gifting. Enquire directly on WhatsApp for tailored quotes and dispatch schedules.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Grid (Each with Dedicated WhatsApp Enquiry CTA) -->
+    <section class="section section-cream">
+      <div class="container">
+        <div class="services-grid" id="servicesGrid">
+          <!-- Populated from config.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- Direct Enquiry Form Section -->
+    <section class="section" id="enquiry-form">
+      <div class="container container-narrow">
+        <div class="section-header" style="margin-bottom: 30px;">
+          <span class="eyebrow">Direct Service Enquiry</span>
+          <h2>Tell Us About Your Requirement</h2>
+          <div class="brass-divider">✦ ✦ ✦</div>
+          <p>Fill out the quick form below to launch a tailored WhatsApp message directly to our culinary coordinator.</p>
+        </div>
+
+        <div class="form-card">
+          <form id="serviceEnquiryForm">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+              <div class="form-group">
+                <label for="servName">Your Full Name *</label>
+                <input type="text" id="servName" class="form-control" placeholder="e.g. Anjali Kurian" required>
+              </div>
+
+              <div class="form-group">
+                <label for="servPhone">Phone / WhatsApp Number *</label>
+                <input type="tel" id="servPhone" class="form-control" placeholder="e.g. +91 98765 43210" required>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
+              <div class="form-group">
+                <label for="servType">Service Required *</label>
+                <select id="servType" class="form-control" required>
+                  <option value="Bulk Order (Wedding / Sadhya)">Bulk Order (Wedding / Sadhya Feast)</option>
+                  <option value="Curated Gift Hampers">Curated Gift Packs &amp; Hampers</option>
+                  <option value="Restaurant & Catering Supply">Restaurant &amp; Catering Supply</option>
+                  <option value="Custom Recipe / Small Batch Request">Custom Recipe / Small Batch Request</option>
+                  <option value="Individual Doorstep Order">Individual Doorstep Order</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="servDistrict">Delivery District in Kerala *</label>
+                <select id="servDistrict" class="form-control" required>
+                  <option value="Ernakulam / Kochi">Ernakulam / Kochi</option>
+                  <option value="Kottayam">Kottayam</option>
+                  <option value="Thiruvananthapuram">Thiruvananthapuram</option>
+                  <option value="Thrissur">Thrissur</option>
+                  <option value="Kozhikode">Kozhikode</option>
+                  <option value="Alappuzha">Alappuzha</option>
+                  <option value="Palakkad">Palakkad</option>
+                  <option value="Kannur">Kannur</option>
+                  <option value="Kollam">Kollam</option>
+                  <option value="Malappuram">Malappuram</option>
+                  <option value="Pathanamthitta">Pathanamthitta</option>
+                  <option value="Idukki">Idukki</option>
+                  <option value="Wayanad">Wayanad</option>
+                  <option value="Kasaragod">Kasaragod</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="servDetails">Estimated Quantity &amp; Event Details</label>
+              <textarea id="servDetails" class="form-control" rows="3" placeholder="e.g. Need 10kg Vadukapuli Lemon & 5kg Mango for marriage reception on 15th December..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-wa btn-full">
+              <span>💬</span> Send Enquiry via WhatsApp
+            </button>
+            <small style="display: block; text-align: center; color: var(--ink-light); margin-top: 10px; font-size: 11px;">
+              This generates a pre-filled WhatsApp message for immediate response.
+            </small>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Packaging & Transit Assurance -->
+    <section class="section section-cream">
+      <div class="container">
+        <div class="story-grid" style="align-items: center;">
+          <div class="story-image-wrap">
+            <img src="https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=1000&q=85" alt="Airtight Pickle Packaging" class="story-img-main">
+          </div>
+          <div class="story-content">
+            <span class="eyebrow">Reliable Logistics</span>
+            <h2>Food-Safe, Leak-Proof Packaging for Any Volume</h2>
+            <p>
+              Whether handling glass jars for luxury gifting or food-grade 5kg/10kg bulk pails for large event catering, every container is airtight and hermetically sealed to preserve the delicate balance of spices and prevent spillage.
+            </p>
+            <p>
+              We coordinate with trusted regional parcel carriers and express couriers throughout Kerala, ensuring prompt dispatch for your auspicious dates.
+            </p>
+            <div style="margin-top: 20px;">
+              <a href="contact.html#delivery" class="text-link">Review Full Kerala Delivery Protocol &rarr;</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Premium Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-top-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="brand-logo" style="margin-bottom: 12px;">
+            <div class="brand-symbol">a.</div>
+            <div class="brand-text">
+              <span class="brand-name" style="color: #fff;">achar <span style="color: var(--gold-warm);">&amp;</span> co.</span>
+              <span class="brand-sub" style="color: var(--gold-warm);">Kerala Heritage Pickles</span>
+            </div>
+          </a>
+          <p>
+            Honouring centuries of Kerala culinary wisdom. Handcrafted in small batches with cold-pressed gingelly oil, whole rock salt, and authentic sun-curing.
+          </p>
+          <div style="font-size: 12px; color: var(--gold-warm); font-weight: 700;">
+            📍 Delivering Across All 14 Districts of Kerala
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Our Heritage</a></li>
+            <li><a href="products.html">Pickle Catalogue</a></li>
+            <li><a href="services.html">Bulk &amp; Feasts</a></li>
+            <li><a href="reviews.html">Customer Reviews</a></li>
+            <li><a href="contact.html">Contact &amp; FAQs</a></li>
+            <li style="margin-top: 6px;"><a href="/admin/login" style="color: var(--gold-warm); font-size: 11px;">🔐 Admin Portal</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Popular Pickles</h4>
+          <ul class="footer-links">
+            <li><a href="products.html">Cut Mango Pickle</a></li>
+            <li><a href="products.html">Vadukapuli Lemon</a></li>
+            <li><a href="products.html">Kanthari Mulaku</a></li>
+            <li><a href="products.html">Spiced Garlic</a></li>
+            <li><a href="products.html">Festive Inji Puli</a></li>
+            <li><a href="products.html">Coastal Prawn Pickle</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Ordering &amp; Enquiries</h4>
+          <p style="font-size: 13px; color: #bfd0c4; margin-bottom: 14px;">
+            We take all orders directly on WhatsApp for personalized service:
+          </p>
+          <a href="https://wa.me/919876543210" class="btn btn-wa btn-sm" target="_blank" rel="noopener" style="margin-bottom: 16px;">
+            <span>💬</span> Message On WhatsApp
+          </a>
+          <div style="font-size: 12px; color: #bfd0c4;">
+            <div>Phone: <span data-config-phone>+91 98765 43210 [Configurable]</span></div>
+            <div style="margin-top: 4px;">Email: <span data-config-email>namaskaram@acharandco.com [Configurable]</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>&copy; <span id="currentYear"></span> Achar &amp; Co. All rights reserved. Handcrafted in Kerala.</div>
+        <div>
+          <span>Crafted with pure spices and Kerala tradition.</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Floating WhatsApp Action Button -->
+  <a href="#" class="floating-wa-btn" id="floatingWhatsApp" target="_blank" rel="noopener" aria-label="Order Pickles on WhatsApp">
+    <div class="floating-wa-icon">💬</div>
+    <span>Order on WhatsApp</span>
+  </a>
+
+  <!-- Cart Drawer -->
+  <div class="drawer-backdrop" id="cartBackdrop"></div>
+  <aside class="cart-drawer" id="cartDrawer" aria-label="Shopping Cart Bag">
+    <div class="drawer-header">
+      <h3>Your Bag <span id="drawerItemCount">(0)</span></h3>
+      <button class="drawer-close" id="closeBagBtn" aria-label="Close Bag">&times;</button>
+    </div>
+    <div class="drawer-body" id="cartItemsContainer"></div>
+    <div class="drawer-footer">
+      <div class="subtotal-row">
+        <span>Estimated Subtotal:</span>
+        <b id="cartSubtotalDisplay">₹0</b>
+      </div>
+      <button class="btn btn-wa btn-full" id="checkoutWhatsAppBtn">
+        <span>💬</span> Complete Order on WhatsApp
+      </button>
+      <small class="note">Courier charges to your Kerala district will be calculated on WhatsApp.</small>
+    </div>
+  </aside>
+
+  <!-- Page Specific Script for Services -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("currentYear").textContent = new Date().getFullYear();
+
+      // Render services from config.js
+      const servicesGrid = document.getElementById("servicesGrid");
+      if (servicesGrid && typeof ACHAR_CONFIG !== "undefined") {
+        servicesGrid.innerHTML = ACHAR_CONFIG.services.map(s => {
+          const waUrl = ACHAR_CONFIG.getWhatsAppUrl(s.whatsappTemplate);
+          return `
+            <div class="service-card" id="${s.id}">
+              <div class="service-card-icon">
+                ${s.icon === "sadhya" ? "🍃" : s.icon === "hamper" ? "🎁" : s.icon === "kitchen" ? "👨‍🍳" : s.icon === "mortar" ? "🏺" : "🏺"}
+              </div>
+              <h3>${s.title}</h3>
+              <p>${s.description}</p>
+              
+              <div class="service-specs">
+                <div class="spec-row">
+                  <span>Minimum Volume:</span>
+                  <b>${s.minQuantity}</b>
+                </div>
+                <div class="spec-row">
+                  <span>Packaging:</span>
+                  <b>${s.packaging}</b>
+                </div>
+              </div>
+
+              <a href="${waUrl}" class="btn btn-wa btn-sm btn-full" target="_blank" rel="noopener">
+                <span>💬</span> Enquire on WhatsApp &rarr;
+              </a>
+            </div>
+          `;
+        }).join("");
+      }
+
+      // Handle custom service form submission
+      const form = document.getElementById("serviceEnquiryForm");
+      if (form) {
+        form.addEventListener("submit", (e) => {
+          e.preventDefault();
+          const name = document.getElementById("servName").value;
+          const phone = document.getElementById("servPhone").value;
+          const type = document.getElementById("servType").value;
+          const district = document.getElementById("servDistrict").value;
+          const details = document.getElementById("servDetails").value;
+
+          const msg = `Namaskaram Achar & Co.! 🌶️\nI would like to enquire about your services:\n\n• Name: *${name}*\n• Contact: *${phone}*\n• Service: *${type}*\n• Delivery District in Kerala: *${district}*\n• Requirement Details: ${details || "None provided"}\n\nPlease share availability, pricing quotation, and dispatch details. Thank you!`;
+
+          const url = ACHAR_CONFIG.getWhatsAppUrl(msg);
+          window.open(url, "_blank");
+          showToast("Opening WhatsApp with your enquiry details...");
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+
