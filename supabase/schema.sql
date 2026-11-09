@@ -4,7 +4,162 @@
 -- ==============================================================================
 
 -- 1. Enable Required Extensions
-CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+ROW LEVEL SECURITY (RLS POLICIES)
+
+-- 7. ADMIN ACCESS CONTROL
+
+CREATE TABLE IF NOT EXISTS public.admin_users (
+  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.admin_users ENABLE ROW LEVEL SECURITY;
+
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE SQL
+STABLE
+SECURITY DEFINER
+SET search_path = ''
+AS $$
+  SELECT EXISTS (
+    SELECT 1
+    FROM public.admin_users
+    WHERE user_id = (SELECT auth.uid())
+  );
+$$;
+
+REVOKE ALL ON FUNCTION public.is_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
+
+-- Enable RLS
+
+ALTER TABLE public.product_categories ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.products ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.product_images ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.enquiries ENABLE ROW LEVEL SECURITY;
+
+-- Remove old policies
+
+DROP POLICY IF EXISTS "Public can view product categories" ON public.product_categories;
+DROP POLICY IF EXISTS "Authenticated admins can manage product categories" ON public.product_categories;
+DROP POLICY IF EXISTS "Public can view active products" ON public.products;
+DROP POLICY IF EXISTS "Authenticated admins can manage all products" ON public.products;
+DROP POLICY IF EXISTS "Public can view product images" ON public.product_images;
+DROP POLICY IF EXISTS "Authenticated admins can manage product images" ON public.product_images;
+DROP POLICY IF EXISTS "Public can insert enquiries" ON public.enquiries;
+DROP POLICY IF EXISTS "Authenticated admins can view and manage enquiries" ON public.enquiries;
+
+-- Categories
+
+CREATE POLICY "Public can view categories"
+ON public.product_categories FOR SELECT
+TO anon, authenticated
+USING (true);
+
+CREATE POLICY "Admins manage categories"
+ON public.product_categories FOR ALL
+TO authenticated
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- Products
+
+CREATE POLICY "Public can view active products"
+ON public.products FOR SELECT
+TO anon, authenticated
+USING (product_status = 'Active');
+
+CREATE POLICY "Admins manage products"
+ON public.products FOR ALL
+TO authenticated
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- Product images
+
+CREATE POLICY "Public can view active product images"
+ON public.product_images FOR SELECT
+TO anon, authenticated
+USING (
+  EXISTS (
+    SELECT 1
+    FROM public.products p
+    WHERE p.id = product_images.product_id
+      AND p.product_status = 'Active'
+  )
+);
+
+CREATE POLICY "Admins manage product images"
+ON public.product_images FOR ALL
+TO authenticated
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- Enquiries
+
+CREATE POLICY "Public can submit enquiries"
+ON public.enquiries FOR INSERT
+TO anon, authenticated
+WITH CHECK (
+  length(trim(full_name)) > 0
+  AND length(trim(phone)) >= 7
+  AND length(trim(message)) > 0
+);
+
+CREATE POLICY "Admins manage enquiries"
+ON public.enquiries FOR ALL
+TO authenticated
+USING (public.is_admin())
+WITH CHECK (public.is_admin());
+
+-- 8. PRODUCT IMAGE STORAGE
+
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('product-images', 'product-images', true)
+ON CONFLICT (id) DO NOTHING;
+
+DROP POLICY IF EXISTS "Public can read product images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated admins can upload product images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated admins can update product images" ON storage.objects;
+DROP POLICY IF EXISTS "Authenticated admins can delete product images" ON storage.objects;
+
+CREATE POLICY "Public can read product images"
+ON storage.objects FOR SELECT
+TO anon, authenticated
+USING (bucket_id = 'product-images');
+
+CREATE POLICY "Admins upload product images"
+ON storage.objects FOR INSERT
+TO authenticated
+WITH CHECK (
+  bucket_id = 'product-images'
+  AND public.is_admin()
+);
+
+CREATE POLICY "Admins update product images"
+ON storage.objects FOR UPDATE
+TO authenticated
+USING (
+  bucket_id = 'product-images'
+  AND public.is_admin()
+)
+WITH CHECK (
+  bucket_id = 'product-images'
+  AND public.is_admin()
+);
+
+CREATE POLICY "Admins delete product images"
+ON storage.objects FOR DELETE
+TO authenticated
+USING (
+  bucket_id = 'product-images'
+  AND public.is_admin()
+);
+
+-- Prevent duplicate seeded product image records on reruns
+CREATE UNIQUE INDEX IF NOT EXISTS idx_product_images_product_url
+ON public.product_images(product_id, image_url);
 
 -- 2. Trigger Function for updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
