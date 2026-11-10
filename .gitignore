@@ -1,6 +1,11 @@
 node_modules/
 dist/
+.vite/
+
+# Environment and secrets
 .env
 .env.*
-!.env.example
-.vite/
+*.local
+*.pem
+*.key
+*.cert
