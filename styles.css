@@ -1346,7 +1346,7 @@ p:last-child {
   border-radius: var(--radius-sm);
 }
 
-/* Review submission form & Admin Moderation Toggle */
+/* Review submission form */
 .review-submit-box {
   background: #ffffff;
   border: 1px solid var(--cream-line);
@@ -1354,25 +1354,6 @@ p:last-child {
   padding: clamp(28px, 5vw, 44px);
   margin-top: 50px;
   box-shadow: var(--shadow-card);
-}
-
-.admin-moderation-banner {
-  background: #fff8e8;
-  border: 1px solid var(--gold-turmeric);
-  border-radius: var(--radius-sm);
-  padding: 16px 20px;
-  margin-bottom: 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.admin-moderation-banner p {
-  font-size: 13px;
-  color: var(--wood-teak);
-  margin: 0;
 }
 
 /* ---------------- Instagram & Gallery Grid ---------------- */

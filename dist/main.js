@@ -1,96 +1,18 @@
 /**
  * Achar & Co. — Core Application Scripts
  * Shared across all pages: Navigation, Cart Drawer, WhatsApp Links, Modals, Toasts
- * Synchronized with Supabase / Admin Product Management
  */
 
 // Cart state (stored in localStorage)
 let ACHAR_CART = JSON.parse(localStorage.getItem("achar_co_cart") || "[]");
 
 document.addEventListener("DOMContentLoaded", () => {
-  // Sync latest product database before rendering
-  syncProductsFromStorage();
-
   initNavigation();
   initFloatingWhatsApp();
   initCartDrawer();
   updateCartBadge();
   setupGlobalPlaceholders();
-
-  // Listen for storage events (when admin updates in another tab)
-  window.addEventListener("storage", (e) => {
-    if (e.key === "achar_admin_products") {
-      syncProductsFromStorage();
-      window.dispatchEvent(new CustomEvent("achar:products-updated"));
-    }
-  });
 });
-
-/**
- * Synchronize live products from Admin Product Management (Supabase / local store)
- */
-function syncProductsFromStorage() {
-  try {
-    const raw = localStorage.getItem("achar_admin_products");
-    if (!raw || typeof ACHAR_CONFIG === "undefined") return;
-    const adminProducts = JSON.parse(raw);
-    if (!Array.isArray(adminProducts) || adminProducts.length === 0) return;
-
-    // Filter active products only (exclude Draft and Inactive)
-    const activeAdminProducts = adminProducts.filter(p => (p.product_status || 'Active') === 'Active');
-
-    // Create lookup of default config products by id or slug
-    const existingMap = new Map();
-    ACHAR_CONFIG.products.forEach(p => {
-      existingMap.set(p.id, p);
-      if (p.slug) existingMap.set(p.slug, p);
-    });
-
-    const syncedList = activeAdminProducts.map(p => {
-      const match = existingMap.get(p.id) || existingMap.get(p.slug) || {};
-      const regPrice = Number(p.regular_price) || match.prices?.["250g"] || 190;
-      const discountPrice = p.discount_price ? Number(p.discount_price) : null;
-      const activeBasePrice = discountPrice || regPrice;
-
-      const prices = {
-        "250g": activeBasePrice,
-        "500g": Math.round(activeBasePrice * 1.9),
-        "1kg": Math.round(activeBasePrice * 3.6)
-      };
-
-      const primaryImg = p.primary_image || (p.images && p.images[0]?.image_url) || match.image || 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800';
-
-      return {
-        id: p.id,
-        slug: p.slug || match.slug || p.id,
-        name: p.name || match.name,
-        malayalamName: match.malayalamName || p.name,
-        category: p.category_name || match.category || 'Vegetarian',
-        badge: p.is_featured ? 'FEATURED' : (match.badge || 'HERITAGE SELECTION'),
-        shortDesc: p.short_description || match.shortDesc || '',
-        fullStory: p.description || match.fullStory || p.short_description || '',
-        image: primaryImg,
-        images: p.images && p.images.length > 0 ? p.images : (match.images || [{ image_url: primaryImg, is_primary: true }]),
-        prices,
-        regular_price: regPrice,
-        discount_price: discountPrice,
-        availability_status: p.availability_status || 'In Stock',
-        is_out_of_stock: p.availability_status === 'Out of Stock',
-        is_featured: Boolean(p.is_featured),
-        ingredients: p.ingredients || match.ingredients || '',
-        allergens: p.allergen_information || match.allergens || 'Contains Sesame and Mustard seeds.',
-        storage: p.storage_instructions || match.storage || 'Store in a cool, dry place. Keep sealed.',
-        shelfLife: p.shelf_life || match.shelfLife || '9 months from packaging date.'
-      };
-    });
-
-    if (syncedList.length > 0) {
-      ACHAR_CONFIG.products = syncedList;
-    }
-  } catch (err) {
-    console.warn("Could not sync products from storage:", err);
-  }
-}
 
 /**
  * Navigation & Header handling

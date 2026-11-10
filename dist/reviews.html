@@ -12,7 +12,7 @@
   
   <script src="/config.js"></script>
   <script src="/main.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/styles-DR9qaIBk.css">
+  <link rel="stylesheet" crossorigin href="/assets/styles-KT20fnje.css">
 </head>
 <body>
 
@@ -78,23 +78,6 @@
           </p>
         </div>
 
-        <!-- Admin Moderation Queue Panel (Visible for Business Owner / Demonstrating Admin Moderation) -->
-        <div class="admin-moderation-banner" id="adminModBanner" style="display: none;">
-          <div>
-            <b>⚙️ Store Owner Moderation Queue:</b>
-            <p id="pendingCountText">You have 0 review(s) awaiting verification.</p>
-          </div>
-          <button class="btn btn-outline btn-sm" onclick="toggleModQueue()" id="toggleQueueBtn">
-            View Moderation Queue
-          </button>
-        </div>
-
-        <!-- Pending Moderation Drawer / List (Hidden by default) -->
-        <div id="modQueueContainer" style="display: none; background: #fffdf7; border: 1px solid var(--gold-turmeric); border-radius: 4px; padding: 20px; margin-bottom: 30px;">
-          <h4 style="font-size: 16px; color: var(--wood-teak); margin-bottom: 12px;">Reviews Pending Approval Before Publication</h4>
-          <div id="pendingListContainer"></div>
-        </div>
-
         <!-- Live Approved Reviews Grid -->
         <div class="reviews-grid" id="allReviewsGrid">
           <!-- Populated from config.js and localStorage -->
@@ -144,7 +127,7 @@
       </div>
     </section>
 
-    <!-- Review Submission Interface (Interactive Form with Admin Moderation Notice) -->
+    <!-- Review Submission Interface (Interactive Form) -->
     <section class="section" id="submit-review">
       <div class="container container-narrow">
         <div class="review-submit-box">
@@ -204,7 +187,7 @@
             </div>
 
             <div style="background: var(--cream-soft); padding: 12px 16px; border-radius: 4px; margin-bottom: 20px; font-size: 12px; color: var(--ink-muted);">
-              <b>Note on Moderation:</b> To ensure authenticity, submissions are queued for admin review before being published. No fake reviews are accepted.
+              <b>Note on Authenticity:</b> To maintain strict culinary authenticity, all customer submissions undergo verification of batch purchase before appearing publicly.
             </div>
 
             <button type="submit" class="btn btn-primary btn-full">
@@ -245,7 +228,6 @@
             <li><a href="services.html">Bulk &amp; Feasts</a></li>
             <li><a href="reviews.html">Customer Reviews</a></li>
             <li><a href="contact.html">Contact &amp; FAQs</a></li>
-            <li style="margin-top: 6px;"><a href="/admin/login" style="color: var(--gold-warm); font-size: 11px;">🔐 Admin Portal</a></li>
           </ul>
         </div>
 
@@ -311,12 +293,11 @@
     </div>
   </aside>
 
-  <!-- Page Specific Script for Reviews & Moderation -->
+  <!-- Page Specific Script for Customer Reviews -->
   <script>
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("currentYear").textContent = new Date().getFullYear();
       renderApprovedReviews();
-      checkPendingModeration();
 
       // Handle Review Submission
       const form = document.getElementById("reviewSubmissionForm");
@@ -329,24 +310,18 @@
           const rating = Number(document.getElementById("revRating").value);
           const text = document.getElementById("revText").value.trim();
 
-          // Add to pending moderation store
-          addPendingReview({
-            author,
-            location,
-            pickleName,
-            rating,
-            text
-          });
+          if (typeof addPendingReview === "function") {
+            addPendingReview({
+              author,
+              location,
+              pickleName,
+              rating,
+              text
+            });
+          }
 
           form.reset();
-          showToast("Review submitted! Placed in moderation queue for admin verification.");
-          checkPendingModeration();
-
-          // Scroll to moderation banner to show the owner what happened
-          const banner = document.getElementById("adminModBanner");
-          if (banner) {
-            banner.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
+          showToast("Thank you! Your review has been submitted for verification.");
         });
       }
     });
@@ -369,75 +344,6 @@
           </div>
         </div>
       `).join("");
-    }
-
-    function checkPendingModeration() {
-      const pending = getPendingReviews();
-      const banner = document.getElementById("adminModBanner");
-      const countText = document.getElementById("pendingCountText");
-      if (!banner || !countText) return;
-
-      if (pending.length > 0) {
-        banner.style.display = "flex";
-        countText.textContent = `You have ${pending.length} pending review(s) in the moderation queue awaiting approval.`;
-        renderPendingList();
-      } else {
-        banner.style.display = "none";
-        const container = document.getElementById("modQueueContainer");
-        if (container) container.style.display = "none";
-      }
-    }
-
-    function toggleModQueue() {
-      const container = document.getElementById("modQueueContainer");
-      if (container) {
-        const isHidden = container.style.display === "none";
-        container.style.display = isHidden ? "block" : "none";
-        if (isHidden) renderPendingList();
-      }
-    }
-
-    function renderPendingList() {
-      const listContainer = document.getElementById("pendingListContainer");
-      if (!listContainer) return;
-      const pending = getPendingReviews();
-
-      if (pending.length === 0) {
-        listContainer.innerHTML = "<p style='font-size: 13px; color: var(--ink-light);'>No pending reviews at this time.</p>";
-        return;
-      }
-
-      listContainer.innerHTML = pending.map(item => `
-        <div style="background: #fff; border: 1px solid var(--cream-line); border-radius: 4px; padding: 16px; margin-bottom: 12px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-            <div>
-              <b style="color: var(--green-deep); font-size: 14px;">${item.author}</b>
-              <small style="color: var(--ink-light); display: block;">${item.location} &middot; ${item.pickleName} &middot; Rating: ${item.rating}/5</small>
-            </div>
-            <span style="font-size: 11px; background: #fff3cd; color: #856404; padding: 2px 8px; border-radius: 3px; font-weight: 700;">Awaiting Approval</span>
-          </div>
-          <p style="font-size: 13px; color: var(--ink-muted); margin-bottom: 12px; font-style: italic;">“${item.text}”</p>
-          <div style="display: flex; gap: 8px;">
-            <button class="btn btn-primary btn-sm" onclick="handleApprove('${item.id}')" style="padding: 6px 12px; font-size: 11px;">✓ Approve & Publish</button>
-            <button class="btn btn-outline btn-sm" onclick="handleReject('${item.id}')" style="padding: 6px 12px; font-size: 11px; color: var(--red-chilli); border-color: var(--red-chilli);">Reject</button>
-          </div>
-        </div>
-      `).join("");
-    }
-
-    function handleApprove(id) {
-      if (approveReview(id)) {
-        showToast("Review approved and published live!");
-        renderApprovedReviews();
-        checkPendingModeration();
-      }
-    }
-
-    function handleReject(id) {
-      if (rejectReview(id)) {
-        showToast("Review dismissed from queue.");
-        checkPendingModeration();
-      }
     }
   </script>
 </body>

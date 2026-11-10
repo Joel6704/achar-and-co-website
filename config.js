@@ -354,37 +354,14 @@ function getPendingReviews() {
 function addPendingReview(reviewData) {
   const pending = getPendingReviews();
   const newReview = {
-    id: "pending-" + Date.now(),
-    date: "Just now",
-    status: "pending_moderation",
+    id: "review-" + Date.now(),
+    date: "Recent",
+    status: "received",
     verified: false,
     ...reviewData
   };
   pending.unshift(newReview);
   localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(pending));
   return newReview;
-}
-
-function approveReview(reviewId) {
-  const pending = getPendingReviews();
-  const index = pending.findIndex(r => r.id === reviewId);
-  if (index !== -1) {
-    const approvedItem = pending.splice(index, 1)[0];
-    approvedItem.status = "approved";
-    approvedItem.verified = true;
-    const approved = getApprovedReviews();
-    approved.unshift(approvedItem);
-    localStorage.setItem(REVIEWS_STORAGE_KEY, JSON.stringify(approved));
-    localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(pending));
-    return true;
-  }
-  return false;
-}
-
-function rejectReview(reviewId) {
-  const pending = getPendingReviews();
-  const filtered = pending.filter(r => r.id !== reviewId);
-  localStorage.setItem(PENDING_STORAGE_KEY, JSON.stringify(filtered));
-  return true;
 }
 

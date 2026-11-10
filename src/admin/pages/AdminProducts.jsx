@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchProducts, fetchProductCategories, updateProduct, deleteProduct } from '../../lib/api';
-import { 
-  ShoppingBag, 
-  PlusCircle, 
-  Search, 
-  Filter, 
-  Star, 
-  Edit3, 
-  Trash2, 
-  ExternalLink, 
-  Tag, 
+import {
+  ShoppingBag,
+  PlusCircle,
+  Search,
+  Filter,
+  Star,
+  Edit3,
+  Trash2,
+  ExternalLink,
+  Tag,
   AlertCircle,
   CheckCircle2,
   XCircle,
@@ -318,8 +318,8 @@ export default function AdminProducts() {
             Catalogue List ({products.length} product{products.length === 1 ? '' : 's'})
           </b>
           {(categoryFilter !== 'All' || statusFilter !== 'All' || searchTerm) && (
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn btn-outline btn-sm"
               style={{ padding: '4px 8px', fontSize: '11px' }}
               onClick={() => {
@@ -390,9 +390,9 @@ export default function AdminProducts() {
                             transition: 'transform 0.15s ease'
                           }}
                         >
-                          <Star 
-                            size={18} 
-                            fill={prod.is_featured ? '#c78d1f' : 'transparent'} 
+                          <Star
+                            size={18}
+                            fill={prod.is_featured ? '#c78d1f' : 'transparent'}
                           />
                         </button>
                       </td>
@@ -437,7 +437,7 @@ export default function AdminProducts() {
                       {/* Product Name & Details */}
                       <td>
                         <div style={{ fontWeight: 600, color: '#12281a', fontSize: '14px', marginBottom: '2px' }}>
-                          <Link 
+                          <Link
                             to={`/admin/products/edit/${prod.id}`}
                             style={{ color: '#12281a', textDecoration: 'none' }}
                             onMouseEnter={e => e.currentTarget.style.color = '#c78d1f'}
@@ -507,9 +507,8 @@ export default function AdminProducts() {
 
                       {/* Stock Availability */}
                       <td>
-                        <span className={`status-pill ${
-                          isOutOfStock ? 'pill-rejected' : 'pill-completed'
-                        }`}>
+                        <span className={`status-pill ${isOutOfStock ? 'pill-rejected' : 'pill-completed'
+                          }`}>
                           {prod.availability_status || 'In Stock'}
                         </span>
                       </td>
@@ -527,9 +526,8 @@ export default function AdminProducts() {
                             padding: 0
                           }}
                         >
-                          <span className={`status-pill ${
-                            prod.product_status === 'Active' ? 'pill-completed' : 'pill-in-progress'
-                          }`}>
+                          <span className={`status-pill ${prod.product_status === 'Active' ? 'pill-completed' : 'pill-in-progress'
+                            }`}>
                             {prod.product_status || 'Active'}
                           </span>
                         </button>
@@ -581,5 +579,7 @@ export default function AdminProducts() {
       </div>
     </div>
   );
+}
+
 }
 

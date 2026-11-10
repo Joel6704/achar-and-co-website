@@ -12,7 +12,7 @@
   
   <script src="/config.js"></script>
   <script src="/main.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/styles-DR9qaIBk.css">
+  <link rel="stylesheet" crossorigin href="/assets/styles-KT20fnje.css">
 </head>
 <body>
 
@@ -172,7 +172,6 @@
             <li><a href="services.html">Bulk &amp; Feasts</a></li>
             <li><a href="reviews.html">Customer Reviews</a></li>
             <li><a href="contact.html">Contact &amp; FAQs</a></li>
-            <li style="margin-top: 6px;"><a href="/admin/login" style="color: var(--gold-warm); font-size: 11px;">🔐 Admin Portal</a></li>
           </ul>
         </div>
 
@@ -283,10 +282,6 @@
           renderCatalogue();
         });
       }
-      // Listen for dynamic product updates from admin panel
-      window.addEventListener("achar:products-updated", () => {
-        renderCatalogue();
-      });
     });
 
     function resetFilters() {
